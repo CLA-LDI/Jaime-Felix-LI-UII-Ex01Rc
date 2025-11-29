@@ -1,10 +1,9 @@
-					TITLE	Programa para comparar dos cadenas
+					TITLE	Programa para comparar dos cadenas (Examen Unidad II Recuperaci贸n Tipo c)
 
 ; Prototipos de llamadas al sistema operativo
 GetStdHandle	PROTO	:QWORD
 ReadConsoleW	PROTO	:QWORD,	:QWORD, :QWORD, :QWORD, :QWORD
 WriteConsoleW	PROTO	:QWORD,	:QWORD, :QWORD, :QWORD, :QWORD
-ExitProcess		PROTO	CodigoSalida:QWORD
 
 				.DATA
 Cadena01		WORD	80 DUP ( ? )
@@ -29,37 +28,41 @@ Principal		PROC
 				; Alinear espacio en la pila
 				SUB		RSP, 40
 
-				; Obtener manejador est醤dar del teclado
+				; Obtener manejador est谩ndar del teclado
 				MOV		RCX, STD_INPUT
 				CALL	GetStdHandle
 				MOV		ManejadorE, RAX
 
-				; Obtener manejador est醤dar de la consola
+				; Obtener manejador est谩ndar de la consola
 				MOV		RCX, STD_OUTPUT
 				CALL	GetStdHandle
 				MOV		ManejadorS, RAX
 
 				; Solicitar la primera cadena
 				MOV		RCX, ManejadorS				; Manejador de la consola donde se escribe
-				LEA		RDX, MenEnt01				; Direcci髇 de la cadena a escribir
-				MOV		R8, LENGTHOF MenEnt01		; N鷐ero de caracteres a escribir
-				LEA		R9, Caracteres				; Direcci髇 de la variable donde se guarda el total de caracteres escrito
+				LEA		RDX, MenEnt01				; Direcci贸n de la cadena a escribir
+				MOV		R8, LENGTHOF MenEnt01		; N煤mero de caracteres a escribir
+				LEA		R9, Caracteres				; Direcci贸n de la variable donde se guarda el total de caracteres escrito
 				MOV		R10, 0						; Reservado para uso futuro
+				PUSH	R10
 				CALL	WriteConsoleW
+				POP		R10
 
 				MOV		RCX, ManejadorE				; Manejador del teclado donde se lee la cadena
-				LEA		RDX, Cadena01				; Direcci髇 de la cadena a leer
-				MOV		R8, LENGTHOF Cadena01		; N鷐ero de caracteres m醲imo a leer
-				LEA		R9, LongCadena01			; Direcci髇 de la variable donde se guarda el total de caracteres le韉os
+				LEA		RDX, Cadena01				; Direcci贸n de la cadena a leer
+				MOV		R8, LENGTHOF Cadena01		; N煤mero de caracteres m谩ximo a leer
+				LEA		R9, LongCadena01			; Direcci贸n de la variable donde se guarda el total de caracteres le铆dos
 				MOV		R10, 0						; Reservado para uso futuro
+				PUSH	R10
 				CALL	ReadConsoleW
+				POP		R10
 
 				SUB		LongCadena01, 2				; Para eliminar el <Enter>
 
 				; Solicitar la segunda cadena
 
-				; Debe comparar las dos cadenas hasta la longitud de la m醩 peque馻.
-				; Al final del ciclo de comparaci髇 pregunte la causa de salida del ciclo:
+				; Debe comparar las dos cadenas hasta la longitud de la m谩s peque帽a.
+				; Al final del ciclo de comparaci贸n pregunte la causa de salida del ciclo:
 
 				; JA - La primer cadena es menor.
 				; JE - Las cadenas son iguales.
@@ -70,17 +73,21 @@ Principal		PROC
 				; La primer cadena es igual que la segunda.
 				; La primer cadena es mayor que la segunda.
 
-				; Salto de l韓ea
+				; Salto de l铆nea
 				MOV		RCX, ManejadorS				; Manejador de la consola donde se escribe
-				LEA		RDX, SaltoLinea				; Direcci髇 de la cadena a escribir
-				MOV		R8, LENGTHOF SaltoLinea		; N鷐ero de caracteres a escribir
-				LEA		R9, Caracteres				; Direcci髇 de la variable donde se guarda el total de caracteres escrito
+				LEA		RDX, SaltoLinea				; Direcci贸n de la cadena a escribir
+				MOV		R8, LENGTHOF SaltoLinea		; N煤mero de caracteres a escribir
+				LEA		R9, Caracteres				; Direcci贸n de la variable donde se guarda el total de caracteres escrito
 				MOV		R10, 0						; Reservado para uso futuro
+				PUSH	R10
 				CALL	WriteConsoleW
+				POP		R10
 
-				; Salir al sistema operativo
-				MOV		RCX, 0
-				CALL	ExitProcess
+				; Recuperar el espacio de la pila
+				ADD		RSP, 40
 
+				; Salir al S. O
+				MOV		RAX, 0					; C贸digo de salida 0
+				RET								; Retornar al sistema operativo
 Principal		ENDP
 				END
